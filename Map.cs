@@ -34,9 +34,13 @@ public class Map
         }
     }
 
-    private Entity GenerateRandomEntity() {
+    private Entity GenerateRandomEntity(int level) {
         Random rnd = new Random();
-        int num = rnd.Next(5);
+        int modifier = 0;
+        if(level >= 2) {
+            modifier = 1;
+        }
+        int num = rnd.Next(5 + modifier);
         switch (num)
         {
             case 0: return new Tree();
@@ -50,6 +54,8 @@ public class Map
             case 4: 
                 remainingJewels += 1;
                 return new RedJewel();
+            case 5:
+                return new Radiation();
             default: return new Water();
         }
     }
@@ -58,7 +64,7 @@ public class Map
         int max = map.GetLength(0);
         int x;
         int y;
-        for(int i = 0; i < max*2 ; i++) {
+        for(int i = 0; i < max*max*0.2 ; i++) {
             Random rnd = new Random();
             do {
                 x = rnd.Next(max);
@@ -67,7 +73,7 @@ public class Map
             } while (!typeof(OpenPath).IsInstanceOfType(map[x,y]));
             
             Console.WriteLine(map[x,y]);
-            map[x, y] = GenerateRandomEntity();
+            map[x, y] = GenerateRandomEntity(max - 9);
             Console.WriteLine(map[x,y]);
         }
     }
