@@ -2,11 +2,19 @@ using System.Collections;
 
 namespace JewelCollector;
 
+/// <summary>
+/// Classe responsável por operações relacionadas ao mapa do jogo.
+/// </summary>
 public class Map
 {
     public int remainingJewels = 0;
     Entity[,] map;
 
+    /// <summary>
+    /// Construtor do mapa, gera um mapa de entidades com todas posições populadas por OpenPath.
+    /// </summary>
+    /// <param name="height">Altura do mapa</param>
+    /// <param name="widght">Largura do mapa</param>
     public Map(int height, int widght) {
         map = new Entity[height, widght];
         for (int i = 0; i < height; i++) {
@@ -15,6 +23,9 @@ public class Map
             }
         }
     }
+    /// <summary>
+    /// Método responsável por imprimir o mapa e a quantidade restante de jóias
+    /// </summary>
     public void PrintMap() {
         for (int i = 0; i < map.GetLength(0); i++) {
             for (int j = 0; j < map.GetLength(1); j++) {
@@ -27,6 +38,12 @@ public class Map
         Console.WriteLine("Remaining Jewels: " + remainingJewels);
     }
     
+    /// <summary>
+    /// Método responsável por inserir uma entidade em uma coordenada no mapa.
+    /// </summary>
+    /// <param name="x">Coordenada x da entidade</param>
+    /// <param name="y">Coordenada y da entidade</param>
+    /// <param name="e">Entidade a ser posicionada em tais coordenadas</param>
     public void InsertEntity(int x, int y, Entity e) {
         map[x, y] = e;
         if(typeof(Jewel).IsInstanceOfType(e)) {
@@ -59,7 +76,11 @@ public class Map
             default: return new Water();
         }
     }
-
+    /// <summary>
+    /// Método responsável por gerar, aleatóriamente, entidades pelo mapa.
+    /// Utiliza como base o tamanho do mapa e gera entidades em proporção a 33% do tamanho do mapa.
+    /// Tantos as entidades como as coordenadas são geradas de forma aleatória.
+    /// </summary>
     public void GenerateEntities() {
         int max = map.GetLength(0);
         int x;
@@ -110,6 +131,12 @@ public class Map
          return false;
     }
 
+    /// <summary>
+    /// Método responsável por movimentar o robô para cima. 
+    /// Verifica se a posição é válida e dispara uma mensagem caso não seja.
+    /// Também verifica se a movimentação irá passar por uma radiação
+    /// </summary>
+    /// <param name="robot">Robô que irá se movimentar</param>
     public void MoveRobotUp(Robot robot) {
         (int, int) robotPosition = FindRobot();
         int x = robotPosition.Item1;
@@ -136,6 +163,12 @@ public class Map
         }
     }
 
+    /// <summary>
+    /// Método responsável por movimentar o robô para a esquerda. 
+    /// Verifica se a posição é válida e dispara uma mensagem caso não seja.
+    /// Também verifica se a movimentação irá passar por uma radiação
+    /// </summary>
+    /// <param name="robot">Objeto Robô que irá se movimentar para a esquerda</param>
     public void MoveRobotLeft(Robot robot) {
         (int, int) robotPosition = FindRobot();
         int x = robotPosition.Item1;
@@ -162,6 +195,12 @@ public class Map
         }
     }
 
+    /// <summary>
+    /// Método responsável por movimentar o robô para a direita. 
+    /// Verifica se a posição é válida e dispara uma mensagem caso não seja.
+    /// Também verifica se a movimentação irá passar por uma radiação
+    /// </summary>
+    /// <param name="robot">Objeto Robô que irá se movimentar para a direita</param>
     public void MoveRobotRight(Robot robot) {
         (int, int) robotPosition = FindRobot();
         int x = robotPosition.Item1;
@@ -188,6 +227,12 @@ public class Map
         }
     }
 
+    /// <summary>
+    /// Método responsável por movimentar o robô para baixo. 
+    /// Verifica se a posição é válida e dispara uma mensagem caso não seja.
+    /// Também verifica se a movimentação irá passar por uma radiação
+    /// </summary>
+    /// <param name="robot">Objeto Robô que irá se movimentar para baixo</param>
     public void MoveRobotDown(Robot robot) {
         (int, int) robotPosition = FindRobot();
         int x = robotPosition.Item1;
@@ -234,6 +279,10 @@ public class Map
         
     }
 
+    /// <summary>
+    /// Método responsável por coletar os itens adjacentes ao Robô.
+    /// </summary>
+    /// <param name="r">Objeto robô que irá coletar os itens</param>
     public void CollectItens(Robot r) {
         (int, int) robotPosition = FindRobot();
         int x = robotPosition.Item1;

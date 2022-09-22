@@ -2,32 +2,24 @@ using System.Collections;
 
 namespace JewelCollector;
 
+/// <summary>
+/// Classe que representa a entidade Robô.
+/// Tem os atributos energia e um Array de itens, referente à sacola do robô.
+/// </summary>
 public class Robot : Entity
 {
     public int energy = 5;
     public ArrayList itens;
 
+    /// <summary>
+    /// Construtor do robô, que inicializa a sacola vazia.
+    /// </summary>
     public Robot() {
         this.itens = new ArrayList();
     }
 
     public override string ToString() {
         return "ME";
-    }
-    public void MoveUp() {
-        
-    }
-    public void MoveRight() {
-
-    }
-    public void MoveLeft() {
-
-    }
-    public void MoveDown() {
-
-    }
-    public void Collect() {
-
     }
     private void PrintJewelTotal() {
         int redJewelTotal = 0;
@@ -59,6 +51,13 @@ public class Robot : Entity
     private void PrintEnergy() {
         Console.WriteLine("Remaining Energy: " + this.energy);
     }
+
+    /// <summary>
+    /// Método que imprime na tela as informações do robô, como: 
+    /// Total de itens na sacola
+    /// Total de pontos referentes à pontuação das joias
+    /// Quantidade de energia restante
+    /// </summary>
     public void PrintInfos() {
         PrintJewelTotal();
         PrintTotalPoints();

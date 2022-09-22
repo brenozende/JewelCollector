@@ -1,9 +1,17 @@
 namespace JewelCollector;
 
+/// <summary>
+/// Classe responsável por conter o método main e uma instância do mapa do jogo.
+/// </summary>
 public class JewelCollector
 {
     Map m;
 
+    /// <summary>
+    /// Construtor principal do JewelCollector. Responsável por criar o mapa e popular com as entidades.
+    /// </summary>
+    /// <param name="r">Robot: Classe do robô que se movimentará pelo mapa.</param>
+    /// <param name="level">Inteiro que define a fase atual do jogo</param>
     public JewelCollector(Robot r, int level) {
         if (level <= 20){
             m = new Map(10 + level,10 + level);
@@ -19,8 +27,6 @@ public class JewelCollector
         bool running = true;
         bool newGame = true;
         int level = 0;
-        //KeyListener keyListener = new KeyListener();
-        // keyListener.KeyPressed += // Método a ser executado
         Robot r = new Robot();
         
         do {
