@@ -64,17 +64,13 @@ public class Map
         int max = map.GetLength(0);
         int x;
         int y;
-        for(int i = 0; i < max*max*0.2 ; i++) {
+        for(int i = 0; i < max*max*0.33 ; i++) {
             Random rnd = new Random();
             do {
                 x = rnd.Next(max);
                 y = rnd.Next(max);
-                Console.WriteLine("x: " + x + " y: " + y + " max: " + max);
             } while (!typeof(OpenPath).IsInstanceOfType(map[x,y]));
-            
-            Console.WriteLine(map[x,y]);
             map[x, y] = GenerateRandomEntity(max - 9);
-            Console.WriteLine(map[x,y]);
         }
     }
 
@@ -89,14 +85,54 @@ public class Map
         return (0,0);
     }
 
+    private Boolean IsTransitable(Entity e){
+        if (typeof(OpenPath).IsInstanceOfType(e) || typeof(Radiation).IsInstanceOfType(e)) {
+            return true;
+        }
+        return false;
+    }
+
+    private Boolean IsRadiation(Entity e) {
+        if(typeof(Radiation).IsInstanceOfType(e)) {
+            return true;
+        }
+        return false;
+    }
+
+    private Boolean HasAdjacentRadiation(Entity[,] map, int x, int y) {
+        if(
+            (x > 1) && (IsRadiation(map[x - 1, y])) ||
+            (x < map.GetLength(0) - 1) && (IsRadiation(map[x + 1, y])) ||
+            (y > 1) && (IsRadiation(map[x, y - 1])) || 
+            (y < map.GetLength(0) - 1) && (IsRadiation(map[x, y + 1]))) {
+            return true;
+         }
+         return false;
+    }
+
     public void MoveRobotUp(Robot robot) {
         (int, int) robotPosition = FindRobot();
         int x = robotPosition.Item1;
         int y = robotPosition.Item2;
-        if(typeof(OpenPath).IsInstanceOfType(map[x - 1, y]) && robot.energy != 0) {
-            map[x, y] = new OpenPath();
-            map[x - 1, y] = robot;
-            robot.energy-=1;
+        try{
+            if(IsTransitable(map[x - 1, y]) && robot.energy != 0) {
+                if(IsRadiation(map[x - 1, y])) {
+                    robot.energy -= 30;
+                }
+                if (HasAdjacentRadiation(map, x-1, y)) {
+                    robot.energy -= 10;
+                }
+                map[x, y] = new OpenPath();
+                map[x - 1, y] = robot;
+                robot.energy-=1;
+            }
+            else {
+                throw new NonTransitableException();
+            }
+        } catch (IndexOutOfRangeException e) {
+            Console.WriteLine("Falha na movimentação: fora dos limites do mapa, tente novamente\n");
+        } catch (NonTransitableException e) {
+            Console.WriteLine("Posição já ocupada por outra entidade, tente outro comando.\n");
         }
     }
 
@@ -104,10 +140,25 @@ public class Map
         (int, int) robotPosition = FindRobot();
         int x = robotPosition.Item1;
         int y = robotPosition.Item2;
-        if(typeof(OpenPath).IsInstanceOfType(map[x, y - 1]) && robot.energy != 0) {
-            map[x, y] = new OpenPath();
-            map[x, y - 1] = robot;
-            robot.energy-=1;
+        try{
+            if(IsTransitable(map[x, y - 1]) && robot.energy != 0) {
+                if(IsRadiation(map[x, y - 1])) {
+                    robot.energy -= 30;
+                }
+                if (HasAdjacentRadiation(map, x, y - 1)) {
+                    robot.energy -= 10;
+                }
+                map[x, y] = new OpenPath();
+                map[x, y - 1] = robot;
+                robot.energy-=1;
+            }
+            else {
+                throw new NonTransitableException();
+            }
+        } catch (IndexOutOfRangeException e) {
+            Console.WriteLine("Falha na movimentação: fora dos limites do mapa, tente outro comando.\n");
+        } catch (NonTransitableException e) {
+            Console.WriteLine("Posição já ocupada por outra entidade, tente outro comando.\n");
         }
     }
 
@@ -115,10 +166,25 @@ public class Map
         (int, int) robotPosition = FindRobot();
         int x = robotPosition.Item1;
         int y = robotPosition.Item2;
-        if(typeof(OpenPath).IsInstanceOfType(map[x, y + 1]) && robot.energy != 0) {
-            map[x, y] = new OpenPath();
-            map[x, y + 1] = robot;
-            robot.energy-=1;
+        try {
+            if(IsTransitable(map[x, y + 1]) && robot.energy != 0) {
+                if(IsRadiation(map[x, y + 1])) {
+                    robot.energy -= 30;
+                }
+                if (HasAdjacentRadiation(map, x, y + 1)) {
+                    robot.energy -= 10;
+                }
+                map[x, y] = new OpenPath();
+                map[x, y + 1] = robot;
+                robot.energy-=1;
+            }
+            else {
+                throw new NonTransitableException();
+            }
+        } catch (IndexOutOfRangeException e) {
+            Console.WriteLine("Falha na movimentação: fora dos limites do mapa, tente novamente\n");
+        } catch (NonTransitableException e) {
+            Console.WriteLine("Posição já ocupada por outra entidade, tente outro comando.\n");
         }
     }
 
@@ -126,10 +192,25 @@ public class Map
         (int, int) robotPosition = FindRobot();
         int x = robotPosition.Item1;
         int y = robotPosition.Item2;
-        if(typeof(OpenPath).IsInstanceOfType(map[x + 1, y]) && robot.energy != 0) {
-            map[x, y] = new OpenPath();
-            map[x + 1, y] = robot;
-            robot.energy-=1;
+        try {
+            if(IsTransitable(map[x + 1, y]) && robot.energy != 0) {
+                if(IsRadiation(map[x + 1, y])) {
+                    robot.energy -= 30;
+                }
+                if (HasAdjacentRadiation(map, x + 1, y)) {
+                    robot.energy -= 10;
+                }
+                map[x, y] = new OpenPath();
+                map[x + 1, y] = robot;
+                robot.energy-=1;
+            }
+            else {
+                throw new NonTransitableException();
+            }
+        } catch (IndexOutOfRangeException e) {
+            Console.WriteLine("Falha na movimentação: fora dos limites do mapa, tente novamente\n");
+        } catch (NonTransitableException e) {
+            Console.WriteLine("Posição já ocupada por outra entidade, tente outro comando.\n");
         }
     }
 
@@ -161,64 +242,48 @@ public class Map
             if (y == 0) {
                 Collect(0, 1, r, x, y);
                 Collect(1, 0, r, x, y);
-                Collect(1, 1, r, x, y);
             }
             else if (y == map.GetLength(0) - 1) {
                 Collect(0, -1, r, x, y);
-                Collect(1, -1, r, x, y);
                 Collect(1, 0, r, x, y);
             }
             else {
                 Collect(0, -1, r, x, y);
-                Collect(1, -1, r, x, y);
                 Collect(1, 0, r, x, y);
                 Collect(0, 1, r, x, y);
-                Collect(1, 1, r, x, y);
             }
         }
         else if (x == map.GetLength(0) - 1) {
             if (y == 0) {
-                Collect(-1, 1, r, x, y);
                 Collect(-1, 0, r, x, y);
                 Collect(0, 1, r, x, y);
             }
             else if (y == map.GetLength(0) - 1) {
                 Collect(0, -1, r, x, y);
                 Collect(-1, 0, r, x, y);
-                Collect(-1, -1, r, x, y);
             }
             else {
                 Collect(0, -1, r, x, y);
-                Collect(-1, -1, r, x, y);
                 Collect(-1, 0, r, x, y);
                 Collect(0, 1, r, x, y);
-                Collect(-1, 1, r, x, y);
             }
         }
         else {
             if (y == 0) {
                 Collect(-1, 0, r, x, y);
-                Collect(-1, 1, r, x, y);
-                Collect(1, 1, r, x, y);
                 Collect(0, 1, r, x, y);
                 Collect(1, 0, r, x, y);
             }
             else if (y == map.GetLength(0) - 1) {
-                Collect(-1, -1, r, x, y);
                 Collect(-1, 0, r, x, y);
-                Collect(1, -1, r, x, y);
                 Collect(0, -1, r, x, y);
                 Collect(1, 0, r, x, y);
             }
             else {
-                Collect(-1, -1, r, x, y);
                 Collect(-1, 0, r, x, y);
-                Collect(-1, 1, r, x, y);
                 Collect(0, -1, r, x, y);
                 Collect(0, 1, r, x, y);
-                Collect(1, -1, r, x, y);
                 Collect(1, 0, r, x, y);
-                Collect(1, 1, r, x, y);
             }
         }
     }

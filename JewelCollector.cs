@@ -54,7 +54,7 @@ public class JewelCollector
                 if(game.m.remainingJewels == 0) {
                     running = false;
                 }
-                if(r.energy == 0) {
+                if(r.energy <= 0) {
                     running = false;
                     newGame = false;
                 }
